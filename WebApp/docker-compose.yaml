@@ -1,0 +1,32 @@
+﻿version: '3'
+
+services:
+  # PostgreSQL service
+  postgres:
+    image: postgres:latest
+    container_name: Pg
+    environment:
+      POSTGRES_DB: PGDateBase
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+    ports:
+      - "5432:5432"
+    networks:
+      - aspnetcoreapp-network
+
+  # Web app service
+  web_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: WebApp
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - aspnetcoreapp-network
+
+networks:
+  aspnetcoreapp-network:
+    driver: bridge
