@@ -23,22 +23,22 @@ public class UnitTest1
 
         var context = new ApplicationContext(options);
 
-        await context.Persons.AddRangeAsync(GetTestUsers());
+        await context.Persons.AddRangeAsync(GetTestPersons());
 
         await context.SaveChangesAsync();
         
         var mock = new Mock<IRepository>();
         var mockLogger = new Mock<ILogger<PersonsController>>();
-        mock.Setup(repo=>repo.GetAll()).Returns(GetTestUsers());
+        mock.Setup(repo=>repo.GetAll()).Returns(GetTestPersons());
         var controller = new PersonsController(mockLogger.Object, context);
 
         var result = await controller.Persons();
         var okResult = Assert.IsType<OkObjectResult>(result);
         var model = Assert.IsAssignableFrom<IEnumerable<Person>>(okResult.Value);
-        Assert.Equal(GetTestUsers().Count, model.Count());
+        Assert.Equal(GetTestPersons().Count, model.Count());
     }
     
-    private List<Person> GetTestUsers()
+    private List<Person> GetTestPersons()
     {
         List<Person> persons = new List<Person>
         {
@@ -59,7 +59,7 @@ public class UnitTest1
         
         var mock = new Mock<IRepository>();
         var mockLogger = new Mock<ILogger<PersonsController>>();
-        mock.Setup(repo=>repo.GetAll()).Returns(GetTestUsers());
+        mock.Setup(repo=>repo.GetAll()).Returns(GetTestPersons());
         var controller = new PersonsController(mockLogger.Object, context);
 
         PersonDto personDto = new()
@@ -106,4 +106,6 @@ public class UnitTest1
         Assert.Equal(resultPerson.Skills[0].Name, model[0].Skills[0].Name);
         Assert.Equal(resultPerson.Skills[0].Level, model[0].Skills[0].Level);
     }
+    
+    
 }
