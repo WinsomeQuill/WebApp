@@ -15,7 +15,7 @@ public interface IRepository
 public class UnitTest1
 {
     [Fact]
-    public async Task Test()
+    public async Task TestGetPersons()
     {
         var options = new DbContextOptionsBuilder<ApplicationContext>()
             .UseInMemoryDatabase(databaseName: "PersonListDatabase")
@@ -23,18 +23,7 @@ public class UnitTest1
 
         var context = new ApplicationContext(options);
 
-        await context.Persons.AddRangeAsync(
-            new Person
-            {
-                Id = 1, Name = "artem", DisplayName = "Artem",
-                Skills = new List<Skill> { new Skill { Name = "C#", Level = 4 } }
-            },
-            new Person
-            {
-                Id = 2, Name = "artem", DisplayName = "Artem",
-                Skills = new List<Skill> { new Skill { Name = "Rust", Level = 7 } }
-            }
-        );
+        await context.Persons.AddRangeAsync(GetTestUsers());
 
         await context.SaveChangesAsync();
         
