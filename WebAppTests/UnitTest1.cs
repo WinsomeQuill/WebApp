@@ -22,6 +22,7 @@ public class UnitTest1
             .Options;
 
         var context = new ApplicationContext(options);
+        await context.Database.EnsureDeletedAsync();
 
         await context.Persons.AddRangeAsync(GetTestPersons());
 
@@ -56,7 +57,8 @@ public class UnitTest1
             .Options;
 
         var context = new ApplicationContext(options);
-        
+        await context.Database.EnsureDeletedAsync();
+
         var mock = new Mock<IRepository>();
         var mockLogger = new Mock<ILogger<PersonsController>>();
         mock.Setup(repo=>repo.GetAll()).Returns(GetTestPersons());
