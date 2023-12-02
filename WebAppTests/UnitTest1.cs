@@ -177,4 +177,54 @@ public class UnitTest1
         Assert.Equal(personDto.Skills[0].Name, model[0].Skills[0].Name);
         Assert.Equal(personDto.Skills[0].Level, model[0].Skills[0].Level);
     }
+    
+    [Fact]
+    public async Task TestDeletePerson()
+    {
+        var options = new DbContextOptionsBuilder<ApplicationContext>()
+            .UseInMemoryDatabase(databaseName: "PersonListDatabase")
+            .Options;
+
+        var context = new ApplicationContext(options);
+        await context.Database.EnsureDeletedAsync();
+        
+        Person person = new()
+        {
+            Id = 1,
+            Name = "artem",
+            DisplayName = "Artem",
+            Skills = new List<Skill>()
+            {
+                new()
+                {
+                    Id = 1,
+                    Name = "C#",
+                    Level = 4,
+                },
+                new()
+                {
+                    Id = 2,
+                    Name = "Rust",
+                    Level = 7,
+                }
+            },
+        };
+
+        await context.Persons.AddAsync(person);
+        await context.SaveChangesAsync();
+
+        var mock = new Mock<IRepository>();
+        var mockLogger = new Mock<ILogger<PersonsController>>();
+        mock.Setup(repo=>repo.GetAll()).Returns(GetTestPersons());
+        var controller = new PersonsController(mockLogger.Object, context);
+        
+        var result = await controller.DeletePerson(person.Id);
+        _ = Assert.IsType<OkResult>(result);
+        
+        result = await controller.Persons();
+        var okResultObject = Assert.IsType<OkObjectResult>(result);
+        
+        var model = Assert.IsAssignableFrom<List<Person>>(okResultObject.Value);
+        Assert.Empty(model);
+    }
 }
