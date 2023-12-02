@@ -1,7 +1,6 @@
 # ASP.NET Core 8 Dockerized Application with Jenkins CI/CD
 
 This repository contains a sample ASP.NET Core 8 web application that is containerized using Docker and has continuous integration and continuous deployment (CI/CD) set up with Jenkins.
-Prerequisites
 
 # Tools used:
 - [.NET SDK 8](https://dotnet.microsoft.com/download)
